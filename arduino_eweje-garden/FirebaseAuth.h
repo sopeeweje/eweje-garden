@@ -1,0 +1,2 @@
+#define FIREBASE_AUTH "44e56ddb3b58254caad6baf4d3bee57e3136829a" 
+#define WIFI_PASSWORD "eLN271828!" 

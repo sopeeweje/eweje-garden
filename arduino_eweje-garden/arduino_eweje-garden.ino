@@ -5,12 +5,16 @@
 #include <FirebaseError.h>
 #include <FirebaseObject.h>
 #include <ESP8266WiFi.h>
-#include <FirebaseAuth.h> //authentication token defined in separate private file (FIREBASE_AUTH)
- 
+
+#include "FirebaseAuth.h"
+//authentication token defined in separate private file (FIREBASE_AUTH)
+//wifi password defined in separate file (WIFI_PASSWORD)
+
+//#include <ArduinoJson.h>
+
 // Set these to run example. 
 #define FIREBASE_HOST "eweje-garden.firebaseio.com"
 #define WIFI_SSID "744 S 19th St Apt 2 (5GHz)" 
-#define WIFI_PASSWORD "eLN271828!" 
  
 void setup() { 
   Serial.begin(9600); 
