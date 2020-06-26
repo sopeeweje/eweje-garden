@@ -5,6 +5,7 @@
 #include <FirebaseError.h>
 #include <FirebaseObject.h>
 #include <ESP8266WiFi.h>
+#include <Time.h>
 
 #include "FirebaseAuth.h"
 //authentication token defined in separate private file (FIREBASE_AUTH)
