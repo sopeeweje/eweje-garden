@@ -6,18 +6,31 @@ import "firebase/database";
 import './Graph.css';
 import FirebaseConfig from '../../FirebaseConfig';
 import {Line} from 'react-chartjs-2';
-//import testdata from '../../test_data.json'
 
 class Graph extends Component {
 
-  getDataPoint = (index, sensorType, jsonData) => {
-    const rawData = jsonData[sensorType][index]; //{"sensor": "Sensor1","date": "20200625","values": [11246,6243,513453,14623,123532]}
-    const labels = ["060000", "090000", "120000", "150000", "180000"];
+  getDataFromRange = (sensorType, doi, range, jsonData) =>{
+    //calculate ms from current date
+    //past = doi - range
+    //calculate ms from past
+    //for each point in data
+      //calculate ms of date
+      //confirm that it is in range, add to outputdata
+    return null
+  }
+
+  getAllData = (sensorType, jsonData) => {
+    var rawData = [];
+    var labels = [];
+    for (var point in jsonData){
+      rawData.push(jsonData[point][sensorType]);
+      labels.push(jsonData[point]["time"]);
+    }
     var datasets = [];
-    const title = rawData.date
+    const title = "All Data"
     datasets.push(
       {
-        label: rawData.sensor,
+        label: sensorType,
         fill: false,
         lineTension: 0.1,
         backgroundColor: 'rgba(75,192,192,0.4)',
@@ -35,7 +48,7 @@ class Graph extends Component {
         pointHoverBorderWidth: 2,
         pointRadius: 1,
         pointHitRadius: 10,
-        data: rawData.values
+        data: rawData
       }
     );
     const outputData = {
@@ -48,16 +61,16 @@ class Graph extends Component {
   render() {
     return(
       <FirebaseDatabaseProvider firebase={firebase} {...FirebaseConfig}>
-        <FirebaseDatabaseNode path="/" orderByKey>
+        <FirebaseDatabaseNode path="/data/" orderByKey>
           {data => {
             if (data.value === null) return null;
             return(
               <Line
-                data={this.getDataPoint(0,this.props.sensor, data.value)[0]}
+                data={this.getAllData(this.props.sensor, data.value)[0]}
                 options={{
                     title:{
                     display:true,
-                    text:this.getDataPoint(0,this.props.sensor, data.value)[1],
+                    text:this.getAllData(this.props.sensor, data.value)[1],
                     fontSize:20
                     },
                     legend:{

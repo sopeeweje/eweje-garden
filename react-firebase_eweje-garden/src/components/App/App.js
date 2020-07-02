@@ -9,7 +9,6 @@ class App extends Component {
       <div>
         <Dropdown></Dropdown>
         <Graph sensor="humidity" />
-        <Graph sensor="moisture" />
         <Graph sensor="temp" />
         <Graph sensor="light" />
       </div>
