@@ -9,25 +9,30 @@ import {Line} from 'react-chartjs-2';
 
 class Graph extends Component {
 
-  getDataFromRange = (sensorType, doi, range, jsonData) =>{
-    //calculate ms from current date
-    //past = doi - range
-    //calculate ms from past
-    //for each point in data
-      //calculate ms of date
-      //confirm that it is in range, add to outputdata
-    return null
-  }
+  getDataFromRange = (sensorType, period, jsonData) =>{
+    const currentDate = new Date();
+    var pastDate = new Date();
+    pastDate.setDate(currentDate.getDate() - period);
 
-  getAllData = (sensorType, jsonData) => {
+    var pointDate;
+    var pointsInRange = [];
+    for (var point in jsonData){
+      pointDate = new Date(jsonData[point]["date"]);
+      pointDate.setHours(jsonData[point]["time"].substring(0,2));
+      pointDate.setMinutes(jsonData[point]["time"].substring(2,4));
+      pointDate.setSeconds(jsonData[point]["time"].substring(4));
+      if (pointDate >= pastDate && pointDate <= currentDate ){
+        pointsInRange.push(jsonData[point])
+      }
+    }
     var rawData = [];
     var labels = [];
-    for (var point in jsonData){
-      rawData.push(jsonData[point][sensorType]);
-      labels.push(jsonData[point]["time"]);
+    for (var i = 0; i < pointsInRange.length; i++){
+      rawData.push(pointsInRange[i][sensorType]);
+      labels.push(pointsInRange[i]["time"]);
     }
     var datasets = [];
-    const title = "All Data"
+    const title = sensorType;
     datasets.push(
       {
         label: sensorType,
@@ -56,7 +61,7 @@ class Graph extends Component {
       datasets: datasets
     };
     return([outputData,title])
-  };
+  }
 
   render() {
     return(
@@ -66,17 +71,24 @@ class Graph extends Component {
             if (data.value === null) return null;
             return(
               <Line
-                data={this.getAllData(this.props.sensor, data.value)[0]}
+                data={this.getDataFromRange(this.props.sensor, this.props.range, data.value)[0]}
                 options={{
                     title:{
                     display:true,
-                    text:this.getAllData(this.props.sensor, data.value)[1],
+                    text:this.getDataFromRange(this.props.sensor, this.props.range, data.value)[1],
                     fontSize:20
                     },
                     legend:{
                     display:true,
                     position:'right'
-                    }
+                    },
+                    animation: {
+                      duration: 0 // general animation time
+                    },
+                    hover: {
+                      animationDuration: 0 // duration of animations when hovering an item
+                    },
+                    responsiveAnimationDuration: 0 // animation duration after a resize
                 }}
               />
             )
