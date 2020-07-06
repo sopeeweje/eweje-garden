@@ -1,6 +1,8 @@
+<img src="header.jpg">
 <h1>The Eweje Garden</h1>
-<p>The Eweje Garden is my first React app, which I built as a gift to my dad who is an avid gardener. The app accompanies ESP8266-based sensor modules that collect temperature, humidity, sunlight, and soil moisture data from different points throughout the garden and send the collected information to a real-time Firebase database over a WiFi connection. The app displays the collected data and calculates metrics that can indicate if certain parts of the garden are receiving insufficient or excessive sunlight and water. Look through the rest of the readme for instructions on how to replicate this system for your own garden!</p>
+<p>The Eweje Garden is my first React app, which I built as a gift to my dad who is an avid gardener. The app accompanies ESP8266-based sensor modules I constructed to collect temperature, humidity, sunlight, and soil moisture data from different points throughout the garden and send the collected information to a real-time Firebase database over a WiFi connection. The app displays the collected data and calculates metrics that can indicate if certain parts of the garden are receiving insufficient or excessive sunlight and water. Keep reading for instructions on how to replicate this system for your own garden!</p>
 <img src="theewejegarden.png">
+<p align=center><i>From the garden to Arduino to Firebase to React</i></p>
 <h2>Materials</h2>
 <h3>Electronics</h3>
 <table>
