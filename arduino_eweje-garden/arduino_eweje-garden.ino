@@ -7,6 +7,10 @@
 #include <ESP8266WiFi.h>
 #include <TimeLib.h>
 #include <time.h>
+#include <WiFiClient.h>
+#include <ESP8266WebServer.h>
+#include <ESP8266mDNS.h>
+#include <ESP8266HTTPUpdateServer.h>
 #include <DS1307RTC.h>  // a basic DS1307 library that returns time as a time_t
 #include <Adafruit_TSL2591.h> //Light sensor
 #include <Adafruit_Si7021.h> //temp and humidity sensor
@@ -38,20 +42,25 @@ float humidity;
 float soilTemp;
 uint16_t soilMoisture;
 int counter = 0;
+
+const char* host = "sensor1-webupdate";
+ESP8266WebServer httpServer(80);
+ESP8266HTTPUpdateServer httpUpdater;
  
 void setup() { 
-  Serial.begin(9600); 
+  Serial.begin(115200); 
  
   // connect to wifi. 
+  WiFi.mode(WIFI_AP_STA);
   WiFi.begin(WIFI_SSID, WIFI_PASSWORD); 
-  Serial.print("connecting"); 
-  while (WiFi.status() != WL_CONNECTED) { 
-    Serial.print("."); 
-    delay(500); 
-  } 
-  Serial.println(); 
-  Serial.print("connected: "); 
-  Serial.println(WiFi.localIP()); 
+  while (WiFi.waitForConnectResult() != WL_CONNECTED) {
+    Serial.println("Connection Failed! Rebooting...");
+  }
+  MDNS.begin(host);
+  httpUpdater.setup(&httpServer);
+  httpServer.begin();
+  MDNS.addService("http", "tcp", 80);
+  Serial.printf("HTTPUpdateServer ready! Open http://%s.local/update in your browser\n", host);
 
   configTime(4 * 3600, 0, "pool.ntp.org", "time.nist.gov"); //(int timezoneinseconds, int daylightOffset_sec, const char* server1, const char* server2, const char* server3)
   Serial.println("\nWaiting for time");
@@ -69,9 +78,22 @@ void setup() {
   pinMode(12, OUTPUT);
   digitalWrite(12, LOW);
   Firebase.begin(FIREBASE_HOST, FIREBASE_AUTH); 
+  pinMode(LED_BUILTIN, OUTPUT);
+  
+  digitalWrite(LED_BUILTIN, LOW);
+  delay(1000);
+  digitalWrite(LED_BUILTIN, HIGH);
+  delay(1000);
+  digitalWrite(LED_BUILTIN, LOW);
+  delay(1000);
+  digitalWrite(LED_BUILTIN, HIGH);
+  delay(1000);
+  digitalWrite(LED_BUILTIN, LOW);
 } 
  
 void loop() {
+  httpServer.handleClient();
+  MDNS.update();
   StaticJsonBuffer<200> dataPoint_buffer;
   JsonObject& dataPoint = dataPoint_buffer.createObject();
   
@@ -80,7 +102,7 @@ void loop() {
   light = tsl.getLuminosity(TSL2591_FULLSPECTRUM);
   temperature = 1.8*si7021.readTemperature()+32;
   humidity = si7021.readHumidity();
-  if (counter == 600){
+  if (counter == 10){
     digitalWrite(12, HIGH);
     delay(1000);
     soilTemp = ss.getTemp();
@@ -112,7 +134,7 @@ void loop() {
       return; 
   } 
   counter++;
-  delay(1000);
+  delay(60000);
 }
 
 String getDate(String cdt){
