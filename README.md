@@ -6,8 +6,10 @@
 <h2>Table of Contents</h2>
 <ul>
   <li><a href="#materials">Materials</a></li>
-  <li><a href="#materials">Materials</a></li>
-  <li><a href="#materials">Materials</a></li>
+  <li><a href="#constructing-sensor-modules">Constructing Sensor Modules</a></li>
+  <li><a href="#connecting-arduino-and-firebase">Connecting Arduino and Firebase</a></li>
+  <li><a href="#connecting-firebase-and-react">Connecting Firebase and React</a></li>
+  <li><a href="#finished-product">Finished Product!</a></li>
 </ul>  
 <h2>Materials</h2>
 <h3>Electronics</h3>
