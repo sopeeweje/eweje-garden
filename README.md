@@ -20,13 +20,13 @@
     <th>Link</th>
   </tr>
   <tr>
-    <td>Temperature & Humidity Sensor Breakout Board</td>
+    <td>Si7021 breakout</td>
     <td>Sensor to get temperature and humidity data</td>
     <td><a target="_blank" href="https://www.adafruit.com/product/3251">Adafruit</a></td>
   </tr>
   <tr>
     <td>Soil sensor</td>
-    <td>Capacitive to get moisture data from soil</td>
+    <td>Capacitive sensor to get moisture data from soil</td>
     <td><a target="_blank" href="https://www.adafruit.com/product/4026">Adafruit</a></td>
   </tr>
   <tr>
@@ -35,13 +35,13 @@
     <td><a target="_blank" href="https://www.adafruit.com/product/2821">Adafruit</a></td>
   </tr>
   <tr>
-    <td>Light sensor</td>
+    <td>TSL2591 luminosity breakout</td>
     <td>Sensor to get sunlight data</td>
     <td><a target="_blank" href="https://www.adafruit.com/product/1980">Adafruit</a></td>
   </tr>
   <tr>
-    <td>Battery holder</td>
-    <td>Battery holder for garden sensor package</td>
+    <td>3xAA waterproof battery holder</td>
+    <td>Battery holder for sensor module</td>
     <td><a target="_blank" href="https://www.adafruit.com/product/771">Adafruit</a></td>
   </tr>
 </table>
