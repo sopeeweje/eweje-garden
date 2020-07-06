@@ -1,6 +1,6 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-//import './GraphArea.css';
+import './GraphArea.css';
 import InputLabel from '@material-ui/core/InputLabel';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
@@ -27,6 +27,9 @@ export default function Dropdown() {
 
   return (
     <div>
+      <h1>The Eweje Garden</h1>
+      <a href="https://github.com/sopeeweje/eweje-garden" rel="noopener noreferrer" target="_blank">Click here for the docs!</a>
+      <br></br>
       <FormControl className={classes.formControl}>
         <InputLabel id="graph-range-label">Time Range</InputLabel>
         <Select
@@ -41,7 +44,12 @@ export default function Dropdown() {
           <MenuItem value={1000} range="All Data">All Data</MenuItem>
         </Select>
       </FormControl>
-      <Graph sensor="humidity" range={state.value}></Graph>
+      <div class="wrapper">
+        <div class="chart-container"><Graph sensor="humidity" range={state.value}></Graph></div>
+        <div class="chart-container"><Graph sensor="temp" range={state.value}></Graph></div>
+        <div class="chart-container"><Graph sensor="light" range={state.value}></Graph></div>
+        <div class="chart-container"><Graph sensor="soil_moisture" range={state.value}></Graph></div>
+      </div>
     </div>
   );
 }

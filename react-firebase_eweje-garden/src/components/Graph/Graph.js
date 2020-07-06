@@ -28,8 +28,13 @@ class Graph extends Component {
     var rawData = [];
     var labels = [];
     for (var i = 0; i < pointsInRange.length; i++){
-      rawData.push(pointsInRange[i][sensorType]);
-      labels.push(pointsInRange[i]["time"]);
+      if (pointsInRange[i][sensorType] !== "-"){
+        rawData.push(pointsInRange[i][sensorType]);
+        labels.push(pointsInRange[i]["time"]);
+      }
+      else{
+        continue;
+      }
     }
     var datasets = [];
     const title = sensorType;
@@ -79,8 +84,7 @@ class Graph extends Component {
                     fontSize:20
                     },
                     legend:{
-                    display:true,
-                    position:'right'
+                    display:false,
                     },
                     animation: {
                       duration: 0 // general animation time
@@ -88,7 +92,9 @@ class Graph extends Component {
                     hover: {
                       animationDuration: 0 // duration of animations when hovering an item
                     },
-                    responsiveAnimationDuration: 0 // animation duration after a resize
+                    responsiveAnimationDuration: 0, // animation duration after a resize
+                    responsive: true,
+                    maintainAspectRatio: false
                 }}
               />
             )

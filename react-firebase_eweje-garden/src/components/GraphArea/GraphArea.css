@@ -1,1 +1,14 @@
-.GraphArea {}
+.wrapper{
+    display: grid;
+    grid-template-columns: auto auto;
+    grid-row: auto auto;
+    grid-column-gap: 5px;
+    grid-row-gap: 10px;
+    padding-left: 50px;
+}
+
+.chart-container{
+    position: relative; 
+    height: 45vh; 
+    width: 45vw;
+}
