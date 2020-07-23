@@ -2,7 +2,7 @@
 
 #banner {
   padding: 12em 0 10em 0;
-  background: linear-gradient( rgba(0, 0, 0, 0.5), rgba(225, 124, 120, 0.5) ), url('../../assets/banner.jpg');
+  background: url('../../assets/banner.jpg');
   background-size: cover;
   background-position: top;
   background-attachment: fixed;

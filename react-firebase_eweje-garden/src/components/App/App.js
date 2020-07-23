@@ -63,10 +63,8 @@ class App extends Component {
     return(
       <div>
         <section id="banner">
-          <h1><b>CHIIN</b></h1>
-          <h3>The COVID-19 Healthcare Information Integration Network</h3>
-          <h4>Bringing locally relevant, up-to-date informmation regarding the pandemic to Africa's frontline healthcare workers.</h4>
-			  </section>
+          <h1><b>The Eweje Garden</b></h1>
+        </section>
         <Fragment>
           <ReactCSSTransitionGroup
               component="div"
