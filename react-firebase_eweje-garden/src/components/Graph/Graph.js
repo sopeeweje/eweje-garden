@@ -1,15 +1,28 @@
 import React, {Component} from 'react';
-//import {Line} from 'react-chartjs-2';
-import { FirebaseDatabaseProvider, FirebaseDatabaseNode } from "@react-firebase/database";
-import firebase from "firebase/app";
-import "firebase/database";
 import './Graph.css';
-import FirebaseConfig from '../../FirebaseConfig';
-import {Line} from 'react-chartjs-2';
+import {db} from "../Firebase/Firebase";
+import {LineChart, Line, Tooltip, XAxis, YAxis, Legend} from 'recharts'; 
 
 class Graph extends Component {
 
-  getDataFromRange = (sensorType, period, jsonData) =>{
+  constructor(props) {
+    super(props);
+    this.state = {
+      range: props.range,
+      data: null
+    };
+  }
+
+  componentDidMount() {
+    db.ref('data').on('value', querySnapShot => {
+      let data = querySnapShot.val() ? querySnapShot.val() : {};
+      this.setState({
+        data: data,
+      });
+    });
+  }
+
+  getDataFromRange = (period, jsonData, sensorType) =>{
     const currentDate = new Date();
     var pastDate = new Date();
     pastDate.setDate(currentDate.getDate() - period);
@@ -22,85 +35,72 @@ class Graph extends Component {
       pointDate.setMinutes(jsonData[point]["time"].substring(2,4));
       pointDate.setSeconds(jsonData[point]["time"].substring(4));
       if (pointDate >= pastDate && pointDate <= currentDate ){
-        pointsInRange.push(jsonData[point])
+        jsonData[point]["datetime"] = pointDate.getTime();
+        pointsInRange.push(jsonData[point]);
       }
     }
-    var rawData = [];
-    var labels = [];
+    var newData = [];
     for (var i = 0; i < pointsInRange.length; i++){
       if (pointsInRange[i][sensorType] !== "-"){
-        rawData.push(pointsInRange[i][sensorType]);
-        labels.push(pointsInRange[i]["time"]);
-      }
-      else{
-        continue;
+        const key = pointsInRange[i]["sensor"];
+        var newPoint = {};
+        newPoint[key] =  pointsInRange[i][sensorType];
+        newPoint["datetime"] = pointsInRange[i]["datetime"];
+        newData.push(newPoint);
+        //pointsInRange[i]
       }
     }
-    var datasets = [];
-    const title = sensorType;
-    datasets.push(
-      {
-        label: sensorType,
-        fill: false,
-        lineTension: 0.1,
-        backgroundColor: 'rgba(75,192,192,0.4)',
-        borderColor: 'rgba(75,192,192,1)',
-        borderCapStyle: 'butt',
-        borderDash: [],
-        borderDashOffset: 0.0,
-        borderJoinStyle: 'miter',
-        pointBorderColor: 'rgba(75,192,192,1)',
-        pointBackgroundColor: '#fff',
-        pointBorderWidth: 1,
-        pointHoverRadius: 5,
-        pointHoverBackgroundColor: 'rgba(75,192,192,1)',
-        pointHoverBorderColor: 'rgba(220,220,220,1)',
-        pointHoverBorderWidth: 2,
-        pointRadius: 1,
-        pointHitRadius: 10,
-        data: rawData
+    return(newData);
+    /*[{Sensor1: 77.01468, datetime: 12340982343},
+       {Sensor2: 42.01468, datetime: 32450921342},
+       ...]*/
+  }
+
+  static getDerivedStateFromProps(props, current_state) {
+    if (current_state.range !== props.range) {
+      return {
+        range: props.range,
       }
-    );
-    const outputData = {
-      labels: labels,
-      datasets: datasets
+    }
+    return null
+  }
+
+  getLabel = (input) =>{
+    const map = {
+      "temp": "Temperature (\u00B0F)",
+      "humidity": "Humidity (%)",
+      "soil_moisture": "Soil Moisture",
+      "light": "Light (lux)"
     };
-    return([outputData,title])
+    return map[input]
+  }
+
+  graphTheThing = (stateData) =>{
+    return(
+      <div>
+        <LineChart 
+          width={450} height={300} 
+          data={this.getDataFromRange(this.state.range, stateData, this.props.measurement)} 
+          //margin={{top: 5, right: 30, left: 20, bottom: 5}}
+        > 
+          {/*chart is from https://recharts.org/en-US/*/}
+          <XAxis type="number" dataKey="datetime" domain={['dataMin','dataMax']} tick={false}/>
+          <YAxis domain={['dataMin','dataMax']} tickFormatter={value => parseFloat(value).toFixed(0)} label={{ value: this.getLabel(this.props.measurement), angle: -90, position: 'insideLeft' }}/>
+          <Line type="monotone" dataKey="Sensor1" stroke="#E12D2B" dot={false} isAnimationActive={false}/>
+          <Line type="monotone" dataKey="Sensor2" stroke="#57E12B" dot={false} isAnimationActive={false}/>
+          <Line type="monotone" dataKey="Sensor3" stroke="#2B6DE1" dot={false} isAnimationActive={false}/>
+          <Legend />
+          <Tooltip labelFormatter={(name) => (new Date(name)).toString()}/>
+        </LineChart>
+      </div>
+    )
   }
 
   render() {
     return(
-      <FirebaseDatabaseProvider firebase={firebase} {...FirebaseConfig}>
-        <FirebaseDatabaseNode path="/data/" orderByKey>
-          {data => {
-            if (data.value === null) return null;
-            return(
-              <Line
-                data={this.getDataFromRange(this.props.sensor, this.props.range, data.value)[0]}
-                options={{
-                    title:{
-                    display:true,
-                    text:this.getDataFromRange(this.props.sensor, this.props.range, data.value)[1],
-                    fontSize:20
-                    },
-                    legend:{
-                    display:false,
-                    },
-                    animation: {
-                      duration: 0 // general animation time
-                    },
-                    hover: {
-                      animationDuration: 0 // duration of animations when hovering an item
-                    },
-                    responsiveAnimationDuration: 0, // animation duration after a resize
-                    responsive: true,
-                    maintainAspectRatio: false
-                }}
-              />
-            )
-          }}
-        </FirebaseDatabaseNode>
-      </FirebaseDatabaseProvider>
+      <div>
+        {this.graphTheThing(this.state.data)}
+      </div>
     );
   }
 }
