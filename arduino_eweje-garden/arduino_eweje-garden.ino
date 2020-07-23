@@ -35,7 +35,7 @@
 Adafruit_TSL2591 tsl = Adafruit_TSL2591(2591);
 Adafruit_Si7021 si7021 = Adafruit_Si7021();
 Adafruit_seesaw ss;
-char sensorName[8] = "Sensor1";
+char sensorName[8] = "Sensor3";
 uint16_t light;
 float temperature;
 float humidity;
@@ -43,7 +43,7 @@ float soilTemp;
 uint16_t soilMoisture;
 int counter = 0;
 
-const char* host = "sensor1-webupdate";
+const char* host = "sensor3-webupdate";
 ESP8266WebServer httpServer(80);
 ESP8266HTTPUpdateServer httpUpdater;
  
@@ -75,23 +75,14 @@ void setup() {
   si7021.begin();
   si7021.heater(false);
   ss.begin(0x36);
-  pinMode(12, OUTPUT);
-  digitalWrite(12, LOW);
   Firebase.begin(FIREBASE_HOST, FIREBASE_AUTH); 
   pinMode(LED_BUILTIN, OUTPUT);
-  
   digitalWrite(LED_BUILTIN, LOW);
-  delay(1000);
-  digitalWrite(LED_BUILTIN, HIGH);
-  delay(1000);
-  digitalWrite(LED_BUILTIN, LOW);
-  delay(1000);
-  digitalWrite(LED_BUILTIN, HIGH);
-  delay(1000);
-  digitalWrite(LED_BUILTIN, LOW);
+  delay(5000);
 } 
  
 void loop() {
+  Serial.println("I woke up");
   httpServer.handleClient();
   MDNS.update();
   StaticJsonBuffer<200> dataPoint_buffer;
@@ -102,21 +93,11 @@ void loop() {
   light = tsl.getLuminosity(TSL2591_FULLSPECTRUM);
   temperature = 1.8*si7021.readTemperature()+32;
   humidity = si7021.readHumidity();
-  if (counter == 10){
-    digitalWrite(12, HIGH);
-    delay(1000);
-    soilTemp = ss.getTemp();
-    soilMoisture = ss.touchRead(0);
-    digitalWrite(12, LOW);
-    counter = 0;
-    dataPoint["soil_temp"] = 1.8*soilTemp+32;
-    dataPoint["soil_moisture"] = soilMoisture;
-  }
-  else{
-    dataPoint["soil_temp"] = "-";
-    dataPoint["soil_moisture"] = "-";
-  }
-  
+  soilTemp = ss.getTemp();
+  soilMoisture = ss.touchRead(0);
+
+  dataPoint["soil_temp"] = 1.8*soilTemp+32;
+  dataPoint["soil_moisture"] = soilMoisture;
   dataPoint["date"] = getDate(dateTime);
   dataPoint["time"] = getTime(dateTime);
   dataPoint["sensor"] = sensorName;
@@ -132,9 +113,9 @@ void loop() {
       Serial.print("pushing /logs failed:"); 
       Serial.println(Firebase.error());   
       return; 
-  } 
-  counter++;
-  delay(60000);
+  }
+  Serial.println("I went to sleep");
+  ESP.deepSleep(600e6); 
 }
 
 String getDate(String cdt){
