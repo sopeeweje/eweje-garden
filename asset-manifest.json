@@ -1,0 +1,24 @@
+{
+  "files": {
+    "main.css": "/eweje-garden/static/css/main.8c0390ef.chunk.css",
+    "main.js": "/eweje-garden/static/js/main.d9b5b3b9.chunk.js",
+    "main.js.map": "/eweje-garden/static/js/main.d9b5b3b9.chunk.js.map",
+    "runtime-main.js": "/eweje-garden/static/js/runtime-main.34770e11.js",
+    "runtime-main.js.map": "/eweje-garden/static/js/runtime-main.34770e11.js.map",
+    "static/js/2.17be881e.chunk.js": "/eweje-garden/static/js/2.17be881e.chunk.js",
+    "static/js/2.17be881e.chunk.js.map": "/eweje-garden/static/js/2.17be881e.chunk.js.map",
+    "index.html": "/eweje-garden/index.html",
+    "precache-manifest.2a61211f759fe075d5ad98b91b27f8c5.js": "/eweje-garden/precache-manifest.2a61211f759fe075d5ad98b91b27f8c5.js",
+    "service-worker.js": "/eweje-garden/service-worker.js",
+    "static/css/main.8c0390ef.chunk.css.map": "/eweje-garden/static/css/main.8c0390ef.chunk.css.map",
+    "static/js/2.17be881e.chunk.js.LICENSE.txt": "/eweje-garden/static/js/2.17be881e.chunk.js.LICENSE.txt",
+    "static/media/base.css": "/eweje-garden/static/media/Pe-icon-7-stroke.c45f7de0.svg",
+    "static/media/App.css": "/eweje-garden/static/media/banner.f6413369.jpg"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.34770e11.js",
+    "static/js/2.17be881e.chunk.js",
+    "static/css/main.8c0390ef.chunk.css",
+    "static/js/main.d9b5b3b9.chunk.js"
+  ]
+}
