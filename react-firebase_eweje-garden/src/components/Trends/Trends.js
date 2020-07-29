@@ -4,6 +4,13 @@ import {db} from "../Firebase/Firebase";
 
 class Trends extends Component {
 
+  mapper = {
+    "temp": "\u00B0F",
+    "soil_moisture": "",
+    "humidity": "%",
+    "light": " lux"
+  }
+
   constructor(props) {
     super(props);
     this.state = {
@@ -24,7 +31,7 @@ class Trends extends Component {
         total += num_data[i];
     }
     var avg = total / num_data.length;
-    return avg.toFixed(1);
+    return avg.toFixed(1).toString().concat(this.mapper[this.props.measurement]);
   }
 
   componentDidMount() {
