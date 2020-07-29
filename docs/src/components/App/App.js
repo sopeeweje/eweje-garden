@@ -105,7 +105,7 @@ class App extends Component {
                                       icon bg color is from https://jspwiki-wiki.apache.org/Wiki.jsp?page=Background%20Gradients  
                                       */}
                                   </div>
-                                  <div className="btn-actions-pane-right">
+                                  <div className="btn-actions-pane-right container d-flex flex-wrap">
                                     <Dropdown isOpen={this.state.dropdownOpen} toggle={this.toggle} className="d-inline-block">
                                         <DropdownToggle caret color="dark">
                                             {this.state.dropdownText}

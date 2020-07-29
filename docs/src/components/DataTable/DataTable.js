@@ -68,10 +68,10 @@ export default class DataTable extends React.Component {
             </TabContent>
                   
           </div>
-          <div className="d-block text-center card-footer">
+          {/*<div className="d-block text-center card-footer">
               <button className="mr-2 btn-icon btn-icon-only btn btn-outline-danger"><i className="pe-7s-trash btn-icon-wrapper"> </i></button>
               <button className="btn-wide btn btn-success">Save</button>
-          </div>
+            </div>*/}
       </Card>
     );
   }
