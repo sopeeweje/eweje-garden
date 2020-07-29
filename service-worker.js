@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "/eweje-garden/precache-manifest.2a61211f759fe075d5ad98b91b27f8c5.js"
+  "/eweje-garden/precache-manifest.1369fc0dc277c4cba608e0444aaf393b.js"
 );
 
 self.addEventListener('message', (event) => {
