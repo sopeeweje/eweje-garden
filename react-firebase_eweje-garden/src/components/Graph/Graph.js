@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import './Graph.css';
-import {db} from "../Firebase/Firebase";
-import {LineChart, Line, Tooltip, XAxis, YAxis, Legend} from 'recharts'; 
+import {db, auth} from "../Firebase/Firebase";
+import {LineChart, Line, Tooltip, XAxis, YAxis, Legend, ResponsiveContainer} from 'recharts'; 
 
 class Graph extends Component {
 
@@ -9,11 +9,33 @@ class Graph extends Component {
     super(props);
     this.state = {
       range: props.range,
-      data: null
+      data: null,
+      colors: []
     };
   }
 
   componentDidMount() {
+    auth.signInAnonymously().catch(function(error) {
+      // Handle Errors here.
+      console.log("Failed sign in")
+      console.log(error.code);
+      console.log(error.message)
+      // ...
+    });
+
+    auth.onAuthStateChanged(function(user) {
+      if (user) {
+        // User is signed in.
+        //var isAnonymous = user.isAnonymous;
+        //console.log(user.uid);
+        // ...
+      } else {
+        // User is signed out.
+        // ...
+      }
+      // ...
+    });
+
     db.ref('data').on('value', querySnapShot => {
       let data = querySnapShot.val() ? querySnapShot.val() : {};
       this.setState({
@@ -57,9 +79,10 @@ class Graph extends Component {
   }
 
   static getDerivedStateFromProps(props, current_state) {
-    if (current_state.range !== props.range) {
+    if (current_state.range !== props.range || current_state.colors !== props.colors) {
       return {
         range: props.range,
+        colors: props.colors
       }
     }
     return null
@@ -77,28 +100,27 @@ class Graph extends Component {
 
   graphTheThing = (stateData) =>{
     return(
-      <div>
-        <LineChart 
-          width={450} height={300} 
+      <ResponsiveContainer height="100%" width="100%">
+        <LineChart
           data={this.getDataFromRange(this.state.range, stateData, this.props.measurement)} 
           //margin={{top: 5, right: 30, left: 20, bottom: 5}}
         > 
           {/*chart is from https://recharts.org/en-US/*/}
-          <XAxis type="number" dataKey="datetime" domain={['dataMin','dataMax']} tick={false}/>
-          <YAxis domain={['dataMin','dataMax']} tickFormatter={value => parseFloat(value).toFixed(0)} label={{ value: this.getLabel(this.props.measurement), angle: -90, position: 'insideLeft' }}/>
-          <Line type="monotone" dataKey="Sensor1" stroke="#E12D2B" dot={false} isAnimationActive={false}/>
-          <Line type="monotone" dataKey="Sensor2" stroke="#57E12B" dot={false} isAnimationActive={false}/>
-          <Line type="monotone" dataKey="Sensor3" stroke="#2B6DE1" dot={false} isAnimationActive={false}/>
-          <Legend />
+          <XAxis hide={true} type="number" dataKey="datetime" domain={['dataMin','dataMax']} tick={false}/>
+          <YAxis hide={true} domain={['dataMin','dataMax']} tick={false} tickFormatter={value => parseFloat(value).toFixed(0)} /*label={{ value: this.getLabel(this.props.measurement), angle: -90, position: 'insideLeft' }}*//>
+          <Line type="monotone" dataKey="Sensor1" stroke={this.state.colors[0]} strokeWidth={2} dot={false} isAnimationActive={false} connectNulls={true}/>
+          <Line type="monotone" dataKey="Sensor2" stroke={this.state.colors[1]} strokeWidth={2} dot={false} isAnimationActive={false} connectNulls={true}/>
+          <Line type="monotone" dataKey="Sensor3" stroke={this.state.colors[2]} strokeWidth={2} dot={false} isAnimationActive={false} connectNulls={true}/>
+          {/*<Legend layout="vertical" align="right" verticalAlign="top"/>*/}
           <Tooltip labelFormatter={(name) => (new Date(name)).toString()}/>
         </LineChart>
-      </div>
+      </ResponsiveContainer>
     )
   }
 
   render() {
     return(
-      <div>
+      <div style={{height:"100%", width:"100%"}}>
         {this.graphTheThing(this.state.data)}
       </div>
     );
