@@ -13,7 +13,11 @@ import {
   CardBody,
   Progress,
   TabContent,
-  TabPane,
+  TabPane, Dropdown, 
+  UncontrolledButtonDropdown, 
+  DropdownToggle, 
+  DropdownMenu, 
+  DropdownItem
 } from 'reactstrap';
 
 import {
@@ -36,18 +40,29 @@ class App extends Component {
   constructor() {
     super();
     this.state = {
-        dropdownOpen: false,
+        dropdownOpen: false, 
         activeTab1: '11',
-
+        time: 1,
+        dropdownText: "Last 24 Hours"
     };
     this.toggle = this.toggle.bind(this);
     this.toggle1 = this.toggle1.bind(this);
+    this.changeRange = this.changeRange.bind(this);
   }
 
   toggle() {
       this.setState(prevState => ({
           dropdownOpen: !prevState.dropdownOpen
       }));
+  }
+
+  changeRange(range, text){
+    console.log(range);//e.currentTarget.getAttribute.range);
+    this.setState({
+          time: range, //e.currentTarget.getAttribute.range,
+          dropdownOpen: !this.state.dropdownOpen,
+          dropdownText: text
+        });
   }
 
   toggle1(tab) {
@@ -59,11 +74,14 @@ class App extends Component {
       }
   }
 
+
+
   render() {
     return(
       <div>
         <section id="banner">
-          <h1><b>The Eweje Garden</b></h1>
+          <h1 className="mb-5"><b>The Eweje Garden</b></h1>
+          <Button outline className="mb-3 mr-2 btn-transition" color="secondary"><a href="https://github.com/sopeeweje/eweje-garden"  target="_blank" rel="noopener noreferrer" className="text-white">(Link to docs)</a></Button>
         </section>
         <Fragment>
           <ReactCSSTransitionGroup
@@ -73,7 +91,7 @@ class App extends Component {
               transitionAppearTimeout={0}
               transitionEnter={false}
               transitionLeave={false}>
-              <div>
+              <div className="m-4">
                   <Row>
                       <Col md="12" lg="6">{/* sm, md, lg, xl set relative break points for different size screens */}
                           <Card className="mb-3">
@@ -88,56 +106,60 @@ class App extends Component {
                                       */}
                                   </div>
                                   <div className="btn-actions-pane-right">
-                                      {/* Tab buttons. Figure out how to change color to the one you want */}
-                                      <Button outline
-                                              className={"ml-1  btn-pill btn-wide border-0 btn-transition bg-grow-early"}
-                                              onClick={() => {
-                                          this.toggle1('11');
-                                      }}>Temp</Button>
-                                      <Button outline
-                                              className={"ml-1 btn-pill btn-wide border-0 btn-transition bg-love-kiss"} // + classnames({active: this.state.activeTab1 === '22'})
-                                              color="primary" onClick={() => {
-                                          this.toggle1('22');
-                                      }}>Humidity</Button>
-                                      <Button outline
-                                              className={"ml-1 btn-pill btn-wide border-0 btn-transition bg-malibu-beach"}
-                                              color="primary" onClick={() => {
-                                          this.toggle1('33');
-                                      }}>Moisture</Button>
-                                      <Button outline
-                                              className={"ml-1 btn-pill btn-wide border-0 btn-transition bg-sunny-morning"}
-                                              onClick={() => {
-                                          this.toggle1('44');
-                                      }}>Light</Button>
+                                    <Dropdown isOpen={this.state.dropdownOpen} toggle={this.toggle} className="d-inline-block">
+                                        <DropdownToggle caret color="dark">
+                                            {this.state.dropdownText}
+                                        </DropdownToggle>
+                                        <DropdownMenu>
+                                            <DropdownItem header>Time frame</DropdownItem>
+                                            <DropdownItem range={1} onClick={() => this.changeRange(1, "Last 24 Hours")}>Last 24 Hours</DropdownItem>
+                                            <DropdownItem range={7} onClick={() => this.changeRange(7, "Last Week")}>Last Week</DropdownItem>
+                                            <DropdownItem range={30} onClick={() => this.changeRange(30, "Last Month")}>Last Month</DropdownItem>
+                                            <DropdownItem range={10000} onClick={() => this.changeRange(10000, "All Data")}>All Data</DropdownItem>
+                                        </DropdownMenu>
+                                    </Dropdown>
+                                    {/* Tab buttons. Figure out how to change color to the one you want */}
+                                    <Button outline
+                                            className={"ml-1  btn-pill btn-wide border-0 btn-transition text-white bg-grow-early"}
+                                            onClick={() => {
+                                        this.toggle1('11');
+                                    }}>Temp</Button>
+                                    <Button outline
+                                            className={"ml-1 btn-pill btn-wide border-0 btn-transition text-white bg-love-kiss"} // + classnames({active: this.state.activeTab1 === '22'})
+                                            color="primary" onClick={() => {
+                                        this.toggle1('22');
+                                    }}>Humidity</Button>
+                                    <Button outline
+                                            className={"ml-1 btn-pill btn-wide border-0 btn-transition text-white bg-malibu-beach"}
+                                            color="primary" onClick={() => {
+                                        this.toggle1('33');
+                                    }}>Moisture</Button>
+                                    <Button outline
+                                            className={"ml-1 btn-pill btn-wide border-0 btn-transition text-white bg-sunny-morning"}
+                                            onClick={() => {
+                                        this.toggle1('44');
+                                    }}>Light</Button>
                                   </div>
                               </CardHeader>
                               <TabContent activeTab={this.state.activeTab1}>
                                   <TabPane tabId="11">{/* Temperature Tab */}
-                                      <div className="widget-chart p-0">
-                                          <ResponsiveContainer height={395}>
-                                              <GraphArea measurement="temp"></GraphArea>
-                                          </ResponsiveContainer>
-                                      </div>
+                                    <div className="widget-chart p-0">
+                                        <GraphArea range={this.state.time} measurement="temp" colors={["#196F3D", "#52BE80", "#ABEBC6"]}></GraphArea>
+                                    </div>
                                   </TabPane>
                                   <TabPane tabId="22">{/* Humidity Tab */}
                                       <div className="widget-chart p-0">
-                                          <ResponsiveContainer height={395}>
-                                              <GraphArea measurement="humidity"></GraphArea>
-                                          </ResponsiveContainer>
+                                        <GraphArea range={this.state.time} measurement="humidity" colors={["#7B241C", "#C0392B", "#E6B0AA"]}></GraphArea>
                                       </div>
                                   </TabPane>
                                   <TabPane tabId="33">{/* Moisture Tab */} 
                                       <div className="widget-chart p-0">
-                                          <ResponsiveContainer height={395}>
-                                              <GraphArea measurement="soil_moisture"></GraphArea>
-                                          </ResponsiveContainer>
+                                        <GraphArea range={this.state.time} measurement="soil_moisture" colors={["#21618C", "#3498DB", "#AED6F1"]}></GraphArea>
                                       </div>
                                   </TabPane>
                                   <TabPane tabId="44">{/* Light Tab */}
                                       <div className="widget-chart p-0">
-                                          <ResponsiveContainer height={395}>
-                                              <GraphArea measurement="light"></GraphArea>
-                                          </ResponsiveContainer>
+                                        <GraphArea range={this.state.time} measurement="light" colors={["#B7950B", "#F4D03F", "#FAD7A0"]}></GraphArea>
                                       </div>
                                   </TabPane>
                               </TabContent>
@@ -158,10 +180,6 @@ class App extends Component {
                                       <div className="widget-subheading">
                                           Avg. Sunlight
                                       </div>
-                                      <div className="widget-description text-white">
-                                          <FontAwesomeIcon icon={faAngleUp}/>
-                                          <span className="pl-1">54.9%</span>
-                                      </div>
                                   </div>
                               </Col>
                               <Col md="6">
@@ -176,10 +194,6 @@ class App extends Component {
                                       <div className="widget-subheading">
                                           Avg. Moisture
                                       </div>
-                                      <div className="widget-description text-white">
-                                          <span className="pr-1">62,7%</span>
-                                          <FontAwesomeIcon icon={faArrowLeft}/>
-                                      </div>
                                   </div>
                               </Col>
                               <Col md="6">
@@ -193,10 +207,6 @@ class App extends Component {
                                       </div>
                                       <div className="widget-subheading">
                                           Avg. Temperature
-                                      </div>
-                                      <div className="widget-description text-white">
-                                          <FontAwesomeIcon icon={faArrowRight}/>
-                                          <span className="pl-1">72.1%</span>
                                       </div>
                                   </div>
                               </Col>
@@ -213,10 +223,6 @@ class App extends Component {
                                           <div className="widget-subheading">
                                               Avg. Humidity
                                           </div>
-                                          <div className="widget-description">
-                                              <FontAwesomeIcon className="text-white opacity-5" icon={faAngleUp}/>
-                                              <span className="text-white">175.5%</span>
-                                          </div>
                                       </div>
                                   </div>
                               </Col>
@@ -225,141 +231,12 @@ class App extends Component {
                   </Row>
                   <Row>
                       <Col md="12">
-                          <Card className="main-card mb-3">
-                              <div className="card-header">Active Users
-                                  <div className="btn-actions-pane-right">
-                                      <div role="group" className="btn-group-sm btn-group">
-                                          <button className="active btn btn-info">Last Week</button>
-                                          <button className="btn btn-info">All Month</button>
-                                      </div>
-                                  </div>
-                              </div>
-                              <div className="table-responsive">
-                                  <table className="align-middle mb-0 table table-borderless table-striped table-hover">
-                                      <thead>
-                                      <tr>
-                                          <th className="text-center">#</th>
-                                          <th>Name</th>
-                                          <th className="text-center">City</th>
-                                          <th className="text-center">Status</th>
-                                          <th className="text-center">Actions</th>
-                                      </tr>
-                                      </thead>
-                                      <tbody>
-                                      <tr>
-                                          <td className="text-center text-muted">#345</td>
-                                          <td>
-                                              <div className="widget-content p-0">
-                                                  <div className="widget-content-wrapper">
-                                                      <div className="widget-content-left mr-3">
-                                                          <div className="widget-content-left">
-                                                              
-                                                          </div>
-                                                      </div>
-                                                      <div className="widget-content-left flex2">
-                                                          <div className="widget-heading">John Doe</div>
-                                                          <div className="widget-subheading opacity-7">Web Developer</div>
-                                                      </div>
-                                                  </div>
-                                              </div>
-                                          </td>
-                                          <td className="text-center">Madrid</td>
-                                          <td className="text-center">
-                                              <div className="badge badge-warning">Pending</div>
-                                          </td>
-                                          <td className="text-center">
-                                              <button type="button" className="btn btn-primary btn-sm">Details</button>
-                                          </td>
-                                      </tr>
-                                      <tr>
-                                          <td className="text-center text-muted">#347</td>
-                                          <td>
-                                              <div className="widget-content p-0">
-                                                  <div className="widget-content-wrapper">
-                                                      <div className="widget-content-left mr-3">
-                                                          <div className="widget-content-left">
-                                                              
-                                                          </div>
-                                                      </div>
-                                                      <div className="widget-content-left flex2">
-                                                          <div className="widget-heading">Ruben Tillman</div>
-                                                          <div className="widget-subheading opacity-7">Etiam sit amet orci eget</div>
-                                                      </div>
-                                                  </div>
-                                              </div>
-                                          </td>
-                                          <td className="text-center">Berlin</td>
-                                          <td className="text-center">
-                                              <div className="badge badge-success">Completed</div>
-                                          </td>
-                                          <td className="text-center">
-                                              <button type="button" className="btn btn-primary btn-sm">Details</button>
-                                          </td>
-                                      </tr>
-                                      <tr>
-                                          <td className="text-center text-muted">#321</td>
-                                          <td>
-                                              <div className="widget-content p-0">
-                                                  <div className="widget-content-wrapper">
-                                                      <div className="widget-content-left mr-3">
-                                                          <div className="widget-content-left">
-                                                              
-                                                          </div>
-                                                      </div>
-                                                      <div className="widget-content-left flex2">
-                                                          <div className="widget-heading">Elliot Huber</div>
-                                                          <div className="widget-subheading opacity-7">Lorem ipsum dolor sic</div>
-                                                      </div>
-                                                  </div>
-                                              </div>
-                                          </td>
-                                          <td className="text-center">London</td>
-                                          <td className="text-center">
-                                              <div className="badge badge-danger">In Progress</div>
-                                          </td>
-                                          <td className="text-center">
-                                              <button type="button" className="btn btn-primary btn-sm">Details</button>
-                                          </td>
-                                      </tr>
-                                      <tr>
-                                          <td className="text-center text-muted">#55</td>
-                                          <td>
-                                              <div className="widget-content p-0">
-                                                  <div className="widget-content-wrapper">
-                                                      <div className="widget-content-left mr-3">
-                                                          <div className="widget-content-left">
-                                                              
-                                                          </div>
-                                                      </div>
-                                                      <div className="widget-content-left flex2">
-                                                          <div className="widget-heading">Vinnie Wagstaff</div>
-                                                          <div className="widget-subheading opacity-7">UI Designer</div>
-                                                      </div>
-                                                  </div>
-                                              </div>
-                                          </td>
-                                          <td className="text-center">Amsterdam</td>
-                                          <td className="text-center">
-                                              <div className="badge badge-info">On Hold</div>
-                                          </td>
-                                          <td className="text-center">
-                                              <button type="button" className="btn btn-primary btn-sm">Details</button>
-                                          </td>
-                                      </tr>
-                                      </tbody>
-                                  </table>
-                              </div>
-                              <div className="d-block text-center card-footer">
-                                  <button className="mr-2 btn-icon btn-icon-only btn btn-outline-danger"><i className="pe-7s-trash btn-icon-wrapper"> </i></button>
-                                  <button className="btn-wide btn btn-success">Save</button>
-                              </div>
-                          </Card>
+                          <DataTable></DataTable>
                       </Col>
                   </Row>
               </div>
           </ReactCSSTransitionGroup>
       </Fragment>
-      <DataTable></DataTable>
       </div>
     )
   }

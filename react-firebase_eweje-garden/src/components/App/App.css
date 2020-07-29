@@ -2,7 +2,10 @@
 
 #banner {
   padding: 12em 0 10em 0;
-  background: url('../../assets/banner.jpg');
+  background: linear-gradient(
+    rgba(0, 0, 0, 0.45), 
+    rgba(0, 0, 0, 0.45)
+  ), url('../../assets/banner.jpg');
   background-size: cover;
   background-position: top;
   background-attachment: fixed;
@@ -14,7 +17,7 @@
     font-size: 3.5em;
     font-weight: 100;
     color: #fff;
-    line-height: 1em;
+    line-height: 0.25em;
     margin: 0 0 0.5em 0;
     padding: 0;
   }
