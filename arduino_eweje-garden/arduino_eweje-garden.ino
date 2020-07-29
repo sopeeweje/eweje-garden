@@ -68,16 +68,24 @@ void setup() {
     Serial.print(".");
     delay(1000);
   }
-  Serial.println("");
+  time_t now = time(nullptr);
+  while (now < 10000){
+    Serial.println(now);
+    now = time(nullptr);
+    delay(1000);
+  }
+  Serial.println("Got the time.");
 
-  tsl.setGain(TSL2591_GAIN_MED);      // 25x gain 
+  tsl.setGain(TSL2591_GAIN_LOW);      // 25x gain 
   tsl.setTiming(TSL2591_INTEGRATIONTIME_300MS);
   si7021.begin();
   si7021.heater(false);
   ss.begin(0x36);
   Firebase.begin(FIREBASE_HOST, FIREBASE_AUTH); 
   pinMode(LED_BUILTIN, OUTPUT);
+  pinMode(12, OUTPUT);
   digitalWrite(LED_BUILTIN, LOW);
+  digitalWrite(12, HIGH);
   delay(5000);
 } 
  
@@ -115,7 +123,7 @@ void loop() {
       return; 
   }
   Serial.println("I went to sleep");
-  ESP.deepSleep(600e6); 
+  ESP.deepSleep(540e6); 
 }
 
 String getDate(String cdt){
