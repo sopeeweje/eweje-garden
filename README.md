@@ -61,3 +61,4 @@
   </tr>
 </table>
 <h2>Sensor modules</h2>
+<img src="sensors.jpg">
