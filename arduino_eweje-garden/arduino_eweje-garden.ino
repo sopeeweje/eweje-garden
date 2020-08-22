@@ -30,7 +30,14 @@
 
 // Set these to run example. 
 #define FIREBASE_HOST "eweje-garden.firebaseio.com"
-#define WIFI_SSID "744 S 19th St Apt 2 (2.4GHz)"
+#define WIFI_SSID1 "eweje3"
+#define WIFI_SSID2 "eweje3_5GHz"
+#define WIFI_SSID3 "eweje2"
+#define WIFI_SSID4 "2400 Catharine St Apt2 (2.4GHz)"
+#define ELEMENTS(x) (sizeof(x) /  sizeof(x[0]))
+
+String networks[4] = {WIFI_SSID1, WIFI_SSID2, WIFI_SSID3, WIFI_SSID4};
+String passwords[4] = {WIFI_PASSWORD_HOME, WIFI_PASSWORD_HOME, WIFI_PASSWORD_HOME, WIFI_PASSWORD_ME};
 
 Adafruit_TSL2591 tsl = Adafruit_TSL2591(2591);
 Adafruit_Si7021 si7021 = Adafruit_Si7021();
@@ -46,16 +53,59 @@ int counter = 0;
 const char* host = "sensor3-webupdate";
 ESP8266WebServer httpServer(80);
 ESP8266HTTPUpdateServer httpUpdater;
- 
+
+bool connectToWiFi(String network, String password){
+  WiFi.begin(network, password); 
+  for (int j = 0; j < 10; j++) {
+    if (WiFi.waitForConnectResult() != WL_CONNECTED){
+      Serial.println("Connection to " + network + " failed. Trying again.");
+    }
+    else{
+      Serial.println("Connected to " + network + ".");
+      return true;
+      break;
+    }
+  }
+  Serial.println("Connection to " + network + " failed. Trying next one.");
+  return false;
+}
+
 void setup() { 
   Serial.begin(115200); 
  
   // connect to wifi. 
   WiFi.mode(WIFI_AP_STA);
-  WiFi.begin(WIFI_SSID, WIFI_PASSWORD); 
-  while (WiFi.waitForConnectResult() != WL_CONNECTED) {
-    Serial.println("Connection Failed! Rebooting...");
+  bool connection = false;
+  while(1){
+    if (not connection){
+      connection = connectToWiFi(WIFI_SSID1, WIFI_PASSWORD_HOME);
+    }
+    else{
+      break;
+    }
+    
+    if (not connection){
+      connection = connectToWiFi(WIFI_SSID2, WIFI_PASSWORD_HOME);
+    }
+    else{
+      break;
+    }
+    
+    if (not connection){
+      connection = connectToWiFi(WIFI_SSID3, WIFI_PASSWORD_HOME);
+    }
+    else{
+      break;
+    }
+    
+    if (not connection){
+      connection = connectToWiFi(WIFI_SSID4, WIFI_PASSWORD_ME);
+    }
+    else{
+      break;
+    }
   }
+  
   MDNS.begin(host);
   httpUpdater.setup(&httpServer);
   httpServer.begin();
